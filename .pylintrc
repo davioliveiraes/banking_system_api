@@ -7,9 +7,6 @@ disable =
       W0703, # catching too general exception Exception
       C0209, # consider-using-f-string
       E0015, # unrecognized-option
-      C0301, # line-too-long
-      C0321, # multiple-statements
-      W0719, # broad-exception-raised
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
