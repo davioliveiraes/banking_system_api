@@ -1,24 +1,54 @@
+-- Tabela: Pessoas Físicas (clientes individuais)
 CREATE TABLE IF NOT EXISTS pessoa_fisica(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    renda_mensal REAL,
-    idade INTEGER,
-    nome_completo TEXT,
-    celular TEXT,
-    email TEXT,
-    categoria TEXT,
-    saldo REAL
+    renda_mensal REAL NOT NULL CHECK(renda_mensal >= 0),
+    idade INTEGER NOT NULL CHECK(idade >= 18),
+    nome_completo TEXT NOT NULL,
+    celular TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE,
+    categoria TEXT NOT NULL,
+    saldo REAL NOT NULL DEFAULT 0.0 CHECK(saldo >= 0),
+    criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Índices para performance em pessoa_fisica
+CREATE INDEX IF NOT EXISTS idx_pessoa_fisica_email ON pessoa_fisica(email);
+CREATE INDEX IF NOT EXISTS idx_pessoa_fisica_celular ON pessoa_fisica(celular);
+
+-- Trigger para atualizar automaticamente o campo atualizado_em em pessoa_fisica
+CREATE TRIGGER IF NOT EXISTS atualizar_pessoa_fisica_timestamp
+AFTER UPDATE ON pessoa_fisica
+FOR EACH ROW
+BEGIN
+    UPDATE pessoa_fisica SET atualizado_em = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
+-- Tabela: Pessoas Jurídicas (empresas)
 CREATE TABLE IF NOT EXISTS pessoa_juridica(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    faturamento REAL,
-    idade INTEGER,
-    nome_fantasia TEXT,
-    celular TEXT,
-    email_corporativo TEXT,
-    categoria TEXT,
-    saldo REAL
+    faturamento REAL NOT NULL CHECK(faturamento >= 0),
+    idade INTEGER NOT NULL CHECK(idade >= 0),
+    nome_fantasia TEXT NOT NULL,
+    celular TEXT NOT NULL UNIQUE,
+    email_corporativo TEXT NOT NULL UNIQUE,
+    categoria TEXT NOT NULL,
+    saldo REAL NOT NULL DEFAULT 0.0 CHECK(saldo >= 0),
+    criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Índices para performance em pessoa_juridica
+CREATE INDEX IF NOT EXISTS idx_pessoa_juridica_email ON pessoa_juridica(email_corporativo);
+CREATE INDEX IF NOT EXISTS idx_pessoa_juridica_celular ON pessoa_juridica(celular);
+
+-- Trigger para atualizar automaticamente o campo atualizado_em em pessoa_juridica
+CREATE TRIGGER IF NOT EXISTS atualizar_pessoa_juridica_timestamp
+AFTER UPDATE ON pessoa_juridica
+FOR EACH ROW
+BEGIN
+    UPDATE pessoa_juridica SET atualizado_em = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
 
 INSERT INTO pessoa_fisica (renda_mensal, idade, nome_completo, celular, email, categoria, saldo) VALUES
 (85000.00, 38, 'Harvey Specter', '555-1001', 'hervey.specter@personhardman.com', 'Socio Senior', 2500000.00),
