@@ -1,6 +1,23 @@
 repos:
   - repo: local
     hooks:
+      # Isort - organiza imports (roda primeiro)
+      - id: isort
+        name: isort
+        entry: isort
+        language: system
+        types: [python]
+        args: ["--profile", "black"] # Compatível com black
+
+      # Black - formatação automática
+      - id: black
+        name: black
+        entry: black
+        language: system
+        types: [python]
+        args: ["--line-length=88"] # Padrão do black
+
+      # Pylint - análise de código (roda por último)
       - id: pylint
         name: pylint
         entry: pylint
