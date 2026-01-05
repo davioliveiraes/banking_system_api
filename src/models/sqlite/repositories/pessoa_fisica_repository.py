@@ -4,9 +4,12 @@ from typing import List, Optional
 from sqlalchemy.exc import NoResultFound
 
 from src.models.sqlite.entities.pessoa_fisica import PessoaFisicaTable
+from src.models.sqlite.interfaces.pessoa_fisica_repository import (
+    PessoaFisicaRepositoryInterface,
+)
 
 
-class PessoaFisicaRepository:
+class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
     """
     Repository para operações de banco de dados da entidade Pessoa Física.
 
