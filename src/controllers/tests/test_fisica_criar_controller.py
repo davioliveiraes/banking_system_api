@@ -8,7 +8,7 @@ class MockPessoaFisicaRepository:
         return pessoa_data
 
 
-def test_criar():
+def test_criar_sucesso():
     pessoa_data = {
         "nome_completo": "Dr. Shaun Murphy",
         "email": "shaunmurphy@gmail.com",

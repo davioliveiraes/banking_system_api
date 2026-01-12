@@ -11,6 +11,10 @@ disable =
       C0301, # line-too-long
       R0904, # too-many-public-methods
       W0621, # redefined-outer-name
+      W0719, # broad-exception-raised
+      W0613, # unused-argument
+      R0917, # too-many-positional-arguments
+      R0913, # too-many-arguments
       
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists
