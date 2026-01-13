@@ -6,7 +6,7 @@ from src.models.sqlite.interfaces.pessoa_fisica_repository import (
 )
 
 
-class PessoaCriarController:
+class PessoaFisicaCriarController:
     def __init__(self, repository: PessoaFisicaRepositoryInterface):
         self.__repository = repository
 

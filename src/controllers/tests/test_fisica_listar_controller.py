@@ -17,9 +17,15 @@ class MockPessoaFisica:
 
 
 class MockPessoaFisicaRepository:
-    def buscar_por_id(self, pessoa_fisica_id: int):
-        if pessoa_fisica_id == 123:
-            return MockPessoaFisica(
+    def __init__(self, retornar_vazio=False):
+        self.retornar_vazio = retornar_vazio
+
+    def listar_todas(self):
+        if self.retornar_vazio:
+            return []
+
+        return [
+            MockPessoaFisica(
                 nome_completo="Nicholas Gonzale",
                 email="nicholasgonzale@gmail.com",
                 celular="88890123121",
@@ -28,26 +34,29 @@ class MockPessoaFisicaRepository:
                 categoria="S",
                 saldo=Decimal("2000000"),
             )
-        return None
+        ]
 
 
 def test_listar_sucesso():
-    controller = PessoaFisicaListarController(MockPessoaFisicaRepository())  # type: ignore
-    response = controller.listar(123)
+    controller = PessoaFisicaListarController(MockPessoaFisicaRepository(retornar_vazio=False))  # type: ignore
+
+    response = controller.listar()
 
     expected_response = {
         "data": {
             "type": "Pessoa Física",
             "count": 1,
-            "attributes": {
-                "nome_completo": "Nicholas Gonzale",
-                "email": "nicholasgonzale@gmail.com",
-                "celular": "88890123121",
-                "idade": 30,
-                "renda_mensal": Decimal("400000"),
-                "categoria": "S",
-                "saldo": Decimal("2000000"),
-            },
+            "attributes": [
+                {
+                    "nome_completo": "Nicholas Gonzale",
+                    "email": "nicholasgonzale@gmail.com",
+                    "celular": "88890123121",
+                    "idade": 30,
+                    "renda_mensal": Decimal("400000"),
+                    "categoria": "S",
+                    "saldo": Decimal("2000000"),
+                },
+            ],
         }
     }
 
@@ -55,8 +64,43 @@ def test_listar_sucesso():
 
 
 def test_listar_nao_encontrado():
-    controller = PessoaFisicaListarController(MockPessoaFisicaRepository())  # type: ignore
+    controller = PessoaFisicaListarController(MockPessoaFisicaRepository(retornar_vazio=True))  # type: ignore
 
-    response = controller.listar(999)
+    response = controller.listar()
+
     assert response["success"] is False
     assert "error" in response
+    assert "Nenhuma Pessoa Física Cadastrada" in response["error"]
+
+
+def test_listar_multiplas_pessoas():
+    class MockRepositoryMultiplo:
+        def listar_todas(self):
+            return [
+                MockPessoaFisica(
+                    nome_completo="Dr. Neil Melendez",
+                    email="neilmelendez@gmail.com",
+                    celular="88987311031",
+                    idade=30,
+                    renda_mensal=Decimal("400000"),
+                    categoria="S",
+                    saldo=Decimal("2000000"),
+                ),
+                MockPessoaFisica(
+                    nome_completo="Dr.ª Claire Browne",
+                    email="clairebrowne.com",
+                    celular="88989101112",
+                    idade=27,
+                    renda_mensal=Decimal("300000"),
+                    categoria="A",
+                    saldo=Decimal("1000000"),
+                ),
+            ]
+
+    controller = PessoaFisicaListarController(MockRepositoryMultiplo())  # type: ignore
+    response = controller.listar()
+
+    assert response["data"]["count"] == 2
+    assert len(response["data"]["attributes"]) == 2
+    assert response["data"]["attributes"][0]["nome_completo"] == "Dr. Neil Melendez"
+    assert response["data"]["attributes"][1]["nome_completo"] == "Dr.ª Claire Browne"

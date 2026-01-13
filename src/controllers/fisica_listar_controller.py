@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from src.models.sqlite.entities.pessoa_fisica import PessoaFisicaTable
 from src.models.sqlite.interfaces.pessoa_fisica_repository import (
@@ -10,32 +10,40 @@ class PessoaFisicaListarController:
     def __init__(self, repository: PessoaFisicaRepositoryInterface) -> None:
         self.__repository = repository
 
-    def listar(self, pessoa_fisica_id: int) -> Dict:
+    def listar(self) -> Dict:
         try:
-            pessoa_fisica = self.__find_pessoa_in_db(pessoa_fisica_id)
-            return self.__format_response(pessoa_fisica)
+            pessoas = self.__find_all_pessoas_in_db()
+
+            if not pessoas:
+                return {"success": False, "error": "Nenhuma Pessoa Física Cadastrada"}
+
+            return self.__format_response(pessoas)
+
         except Exception as exc:
             return {"success": False, "error": str(exc)}
 
-    def __find_pessoa_in_db(self, pessoa_fisica_id: int) -> PessoaFisicaTable:
-        pessoa_fisica = self.__repository.buscar_por_id(pessoa_fisica_id)
-        if not pessoa_fisica:
-            raise Exception("Pessoa Física não encontrada")
-        return pessoa_fisica
+    def __find_all_pessoas_in_db(self) -> List[PessoaFisicaTable]:
+        pessoas = self.__repository.listar_todas()
+        if not pessoas:
+            raise Exception("Nenhuma Pessoa Física Cadastrada")
+        return pessoas
 
-    def __format_response(self, pessoa_fisica: PessoaFisicaTable) -> Dict:
+    def __format_response(self, pessoas: List[PessoaFisicaTable]) -> Dict:
         return {
             "data": {
                 "type": "Pessoa Física",
-                "count": 1,
-                "attributes": {
-                    "nome_completo": pessoa_fisica.nome_completo,
-                    "email": pessoa_fisica.email,
-                    "celular": pessoa_fisica.celular,
-                    "idade": pessoa_fisica.idade,
-                    "renda_mensal": pessoa_fisica.renda_mensal,
-                    "categoria": pessoa_fisica.categoria,
-                    "saldo": pessoa_fisica.saldo,
-                },
+                "count": len(pessoas),
+                "attributes": [
+                    {
+                        "nome_completo": pessoa.nome_completo,
+                        "email": pessoa.email,
+                        "celular": pessoa.celular,
+                        "idade": pessoa.idade,
+                        "renda_mensal": pessoa.renda_mensal,
+                        "categoria": pessoa.categoria,
+                        "saldo": pessoa.saldo,
+                    }
+                    for pessoa in pessoas
+                ],
             }
         }

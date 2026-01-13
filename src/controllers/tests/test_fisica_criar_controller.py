@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from src.controllers.fisica_criar_controller import PessoaCriarController
+from src.controllers.fisica_criar_controller import PessoaFisicaCriarController
 
 
 class MockPessoaFisicaRepository:
@@ -19,7 +19,7 @@ def test_criar_sucesso():
         "saldo": Decimal("45000000"),
     }
 
-    controller = PessoaCriarController(MockPessoaFisicaRepository())  # type: ignore
+    controller = PessoaFisicaCriarController(MockPessoaFisicaRepository())  # type: ignore
     response = controller.criar(pessoa_data)
 
     assert response["success"] is True
@@ -39,7 +39,7 @@ def test_criar_error():
         "saldo": Decimal("45000000"),
     }
 
-    controller = PessoaCriarController(MockPessoaFisicaRepository())  # type: ignore
+    controller = PessoaFisicaCriarController(MockPessoaFisicaRepository())  # type: ignore
 
     response = controller.criar(pessoa_data)
     assert response["success"] is False
