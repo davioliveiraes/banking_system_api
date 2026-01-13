@@ -1,12 +1,15 @@
 import re
 from typing import Dict
 
+from src.controllers.interfaces.juridica_criar_controller import (
+    PessoaJuridicaCriarControllerInterface,
+)
 from src.models.sqlite.interfaces.pessoa_juridica_repository import (
     PessoaJuridicaRepositoryInterface,
 )
 
 
-class PessoaJuridicaCriarControler:
+class PessoaJuridicaCriarControler(PessoaJuridicaCriarControllerInterface):
     def __init__(self, repository: PessoaJuridicaRepositoryInterface):
         self.__repository = repository
 
