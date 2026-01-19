@@ -8,7 +8,7 @@ class DBConnectionHandler:
         self.__engine = None
         self.session = None
 
-    def connect_to_be(self):
+    def connect_to_db(self):
         try:
             self.__engine = create_engine(
                 self.__connection_string,
@@ -23,7 +23,7 @@ class DBConnectionHandler:
 
     def get_engine(self):
         if self.__engine is None:
-            self.connect_to_be()
+            self.connect_to_db()
         return self.__engine
 
     def __enter__(self):
