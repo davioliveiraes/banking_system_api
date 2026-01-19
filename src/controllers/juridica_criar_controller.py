@@ -86,6 +86,7 @@ class PessoaJuridicaCriarControler(PessoaJuridicaCriarControllerInterface):
 
     def __format_response(self, pessoa_obj) -> Dict:
         pessoa_dict = {
+            "id": pessoa_obj.id,
             "nome_fantasia": pessoa_obj.nome_fantasia,
             "email_corporativo": pessoa_obj.email_corporativo,
             "celular": pessoa_obj.celular,
