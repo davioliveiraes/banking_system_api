@@ -129,6 +129,12 @@ class PessoaJuridicaRepository(PessoaJuridicaRepositoryInterface):
             if valor <= 0:
                 raise ValueError("Valor de saque deve ser positivo")
 
+            limite_saque_juridica = Decimal("5000000.00")
+            if valor > limite_saque_juridica:
+                raise ValueError(
+                    f"Limite de saque excedido. Máximo permitido: ${limite_saque_juridica}"
+                )
+
             if empresa.saldo < valor:
                 raise ValueError(
                     f"Saldo Insuficiente. Saldo: {empresa.saldo}, Saque: {valor}"

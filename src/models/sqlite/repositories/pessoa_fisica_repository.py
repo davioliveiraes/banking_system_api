@@ -129,6 +129,12 @@ class PessoaFisicaRepository(PessoaFisicaRepositoryInterface):
             if valor <= 0:
                 raise ValueError("Valor de saque deve ser positivo")
 
+            limite_saque_fisica = Decimal("50000.00")
+            if valor > limite_saque_fisica:
+                raise ValueError(
+                    f"Limite de saque excedido. Máximo permitido: ${limite_saque_fisica}"
+                )
+
             if pessoa.saldo < valor:
                 raise ValueError(
                     f"Saldo Insuficiente. Saldo: {pessoa.saldo}, Saque: {valor}"
