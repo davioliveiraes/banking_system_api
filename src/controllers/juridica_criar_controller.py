@@ -84,8 +84,26 @@ class PessoaJuridicaCriarControler(PessoaJuridicaCriarControllerInterface):
     def __insert_pessoa_in_db(self, pessoa_data: Dict):
         return self.__repository.criar_empresa(pessoa_data)
 
-    def __format_response(self, pessoa_data: Dict) -> Dict:
+    def __format_response(self, pessoa_obj) -> Dict:
+        pessoa_dict = {
+            "nome_fantasia": pessoa_obj.nome_fantasia,
+            "email_corporativo": pessoa_obj.email_corporativo,
+            "celular": pessoa_obj.celular,
+            "categoria": pessoa_obj.categoria,
+            "faturamento": float(pessoa_obj.faturamento),
+            "idade": pessoa_obj.idade,
+            "saldo": float(pessoa_obj.saldo),
+            "criado_em": (
+                pessoa_obj.criado_em.isoformat() if pessoa_obj.criado_em else None
+            ),
+            "atualizado_em": (
+                pessoa_obj.atualizado_em.isoformat()
+                if pessoa_obj.atualizado_em
+                else None
+            ),
+        }
+
         return {
             "success": True,
-            "data": {"type": "Pessoa Jurídica", "count": 1, "attributes": pessoa_data},
+            "data": {"type": "Pessoa Jurídica", "count": 1, "attributes": pessoa_dict},
         }

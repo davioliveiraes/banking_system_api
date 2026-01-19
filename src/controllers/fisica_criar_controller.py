@@ -89,8 +89,27 @@ class PessoaFisicaCriarController(PessoaFisicaCriarControllerInterface):
     def __insert_pessoa_in_db(self, pessoa_data: Dict):
         return self.__repository.criar_pessoa(pessoa_data)
 
-    def __format_response(self, pessoa_data: Dict) -> Dict:
+    def __format_response(self, pessoa_obj) -> Dict:
+        pessoa_dict = {
+            "id": pessoa_obj.id,
+            "nome_completo": pessoa_obj.nome_completo,
+            "email": pessoa_obj.email,
+            "celular": pessoa_obj.celular,
+            "idade": pessoa_obj.idade,
+            "renda_mensal": float(pessoa_obj.renda_mensal),
+            "categoria": pessoa_obj.categoria,
+            "saldo": float(pessoa_obj.saldo),
+            "criado_em": (
+                pessoa_obj.criado_em.isoformat() if pessoa_obj.criado_em else None
+            ),
+            "atualizado_em": (
+                pessoa_obj.atualizado_em.isoformat()
+                if pessoa_obj.atualizado_em
+                else None
+            ),
+        }
+
         return {
             "success": True,
-            "data": {"type": "Pessoa Física", "count": 1, "attributes": pessoa_data},
+            "data": {"type": "Pessoa Física", "count": 1, "attributes": pessoa_dict},
         }
