@@ -4,6 +4,7 @@ from typing import Dict
 from src.controllers.interfaces.fisica_criar_controller import (
     PessoaFisicaCriarControllerInterface,
 )
+from src.errors.error_types.http_bad_request import HttpBadRequestError
 from src.views.fisica_criar_views import PessoaFisicaCriarView
 from src.views.http_types.http_request import HttpRequest
 from src.views.http_types.http_response import HttpResponse
@@ -19,7 +20,7 @@ class MockPessoaFisicaCriarController(PessoaFisicaCriarControllerInterface):
 
 class MockPessoaFisicaCriarControllerError(PessoaFisicaCriarControllerInterface):
     def criar(self, pessoa_data: Dict) -> Dict:
-        raise Exception("Erro ao criar pessoa física")
+        raise HttpBadRequestError("Erro ao criar pessoa física")
 
 
 def test_handle():

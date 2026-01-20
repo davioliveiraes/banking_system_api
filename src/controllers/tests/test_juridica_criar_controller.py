@@ -1,10 +1,13 @@
 from decimal import Decimal
 from typing import Dict
 
+import pytest
+
 from src.controllers.juridica_criar_controller import PessoaJuridicaCriarControler
+from src.errors.error_types.http_bad_request import HttpBadRequestError
 
 
-class MockPessoaJuridica:
+class MockPessoaJuridica:  # pylint: disable=too-many-instance-attributes
     def __init__(self, data):
         self.id = 1
         self.nome_fantasia = data["nome_fantasia"]
@@ -66,6 +69,7 @@ def test_criar_error():
 
     controller = PessoaJuridicaCriarControler(MockPessoaJuridicaRepository())  # type: ignore
 
-    response = controller.criar(pessoa_data)
-    assert response["success"] is False
-    assert "error" in response
+    with pytest.raises(HttpBadRequestError) as exc_info:
+        controller.criar(pessoa_data)
+
+    assert "Email corporativo inválido" in str(exc_info.value)

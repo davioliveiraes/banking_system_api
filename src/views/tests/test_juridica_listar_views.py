@@ -4,6 +4,7 @@ from typing import Dict
 from src.controllers.interfaces.juridica_listar_controller import (
     PessoaJuridicaListarControllerInterface,
 )
+from src.errors.error_types.http_not_found import HttpNotFoundError
 from src.views.http_types.http_request import HttpRequest
 from src.views.http_types.http_response import HttpResponse
 from src.views.juridica_listar_views import PessoaJuridicaListaView
@@ -41,7 +42,7 @@ class MockPessoaJuridicaListarController(PessoaJuridicaListarControllerInterface
 
 class MockPessoaJuridicaListarControllerError(PessoaJuridicaListarControllerInterface):
     def listar(self) -> Dict:
-        raise Exception("Nenhuma Pessoa Jurídica Encontrada")
+        raise HttpNotFoundError("Nenhuma Pessoa Jurídica Encontrada")
 
 
 def test_handle():
@@ -65,7 +66,7 @@ def test_handle_empty_list():
 
     response = view.handle(http_request)
 
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert response.body == {
         "success": False,
         "error": "Nenhuma Pessoa Jurídica Encontrada",

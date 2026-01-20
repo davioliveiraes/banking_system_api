@@ -3,6 +3,7 @@ from typing import Dict, List
 from src.controllers.interfaces.juridica_listar_controller import (
     PessoaJuridicaListarControllerInterface,
 )
+from src.errors.error_types.http_not_found import HttpNotFoundError
 from src.models.sqlite.entities.pessoa_juridica import PessoaJuridicaTable
 from src.models.sqlite.interfaces.pessoa_juridica_repository import (
     PessoaJuridicaRepositoryInterface,
@@ -14,21 +15,13 @@ class PessoaJuridicaListarController(PessoaJuridicaListarControllerInterface):
         self.__repository = repository
 
     def listar(self) -> Dict:
-        try:
-            pessoas = self.__find_all_pessoa_in_db()
-
-            if not pessoas:
-                return {"success": False, "error": "Nenhuma Pessoa Jurídica Cadastrada"}
-
-            return self.__format_response(pessoas)
-
-        except Exception as exc:
-            return {"success": False, "error": str(exc)}
+        pessoas = self.__find_all_pessoa_in_db()
+        return self.__format_response(pessoas)
 
     def __find_all_pessoa_in_db(self) -> List[PessoaJuridicaTable]:
         pessoas = self.__repository.listar_todas()
         if not pessoas:
-            raise Exception("Nenhuma Pessoa Jurídica Cadastrada")
+            raise HttpNotFoundError("Nenhuma Pessoa Jurídica Cadastrada")
         return pessoas
 
     def __format_response(self, pessoas: List[PessoaJuridicaTable]) -> Dict:

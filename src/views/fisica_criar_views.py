@@ -1,6 +1,7 @@
 from src.controllers.interfaces.fisica_criar_controller import (
     PessoaFisicaCriarControllerInterface,
 )
+from src.errors.error_types.http_error import HttpError
 
 from .http_types.http_request import HttpRequest
 from .http_types.http_response import HttpResponse
@@ -15,7 +16,16 @@ class PessoaFisicaCriarView(ViewInterface):
         try:
             pessoa_data = http_request.body
             body_response = self.__controller.criar(pessoa_data)
-
             return HttpResponse(status_code=201, body=body_response)  # type: ignore
+
+        except HttpError as error:
+            return HttpResponse(status_code=error.status_code, body=error.to_dict())
+
         except Exception as exc:
-            return HttpResponse(status_code=400, body={"success": False, "error": str(exc)})  # type: ignore
+            return HttpResponse(
+                status_code=500,
+                body={
+                    "success": False,
+                    "error": f"Erro interno do servidor: {str(exc)}",
+                },
+            )

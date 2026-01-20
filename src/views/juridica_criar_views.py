@@ -1,6 +1,7 @@
 from src.controllers.interfaces.juridica_criar_controller import (
     PessoaJuridicaCriarControllerInterface,
 )
+from src.errors.error_types.http_error import HttpError
 
 from .http_types.http_request import HttpRequest
 from .http_types.http_response import HttpResponse
@@ -17,7 +18,15 @@ class PessoaJuridicaCriarViews(ViewInterface):
             body_response = self.__controller.criar(pessoa_data)
 
             return HttpResponse(status_code=201, body=body_response)  # type: ignore
+
+        except HttpError as error:
+            return HttpResponse(status_code=error.status_code, body=error.to_dict())
+
         except Exception as exc:
             return HttpResponse(
-                status_code=400, body={"success": False, "error": str(exc)}
+                status_code=500,
+                body={
+                    "success": False,
+                    "error": f"Erro interno do servidor: {str(exc)}",
+                },
             )

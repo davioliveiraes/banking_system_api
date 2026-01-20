@@ -4,6 +4,7 @@ from typing import Dict
 from src.controllers.interfaces.fisica_listar_controller import (
     PessoaFisicaListarControllerInterface,
 )
+from src.errors.error_types.http_not_found import HttpNotFoundError
 from src.views.fisica_listar_views import PessoaFisicaListarViews
 from src.views.http_types.http_request import HttpRequest
 from src.views.http_types.http_response import HttpResponse
@@ -41,7 +42,7 @@ class MockPessoaFisicaListarController(PessoaFisicaListarControllerInterface):
 
 class MockPessoaFisicaListaControllerError(PessoaFisicaListarControllerInterface):
     def listar(self) -> Dict:
-        raise Exception("Nenhuma Pessoa Física Cadastrada")
+        raise HttpNotFoundError("Nenhuma Pessoa Física Cadastrada")
 
 
 def test_handle():
@@ -65,7 +66,7 @@ def test_handle_empty_list():
 
     response = view.handle(http_request)
 
-    assert response.status_code == 400
+    assert response.status_code == 404
     assert response.body == {
         "success": False,
         "error": "Nenhuma Pessoa Física Cadastrada",

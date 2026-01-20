@@ -1,8 +1,14 @@
 import re
 from typing import Dict
 
+from sqlalchemy.exc import IntegrityError
+
 from src.controllers.interfaces.fisica_criar_controller import (
     PessoaFisicaCriarControllerInterface,
+)
+from src.errors.error_types.http_bad_request import HttpBadRequestError
+from src.errors.error_types.http_unprocessable_entity import (
+    HttpUnprocessableEntityError,
 )
 from src.models.sqlite.interfaces.pessoa_fisica_repository import (
     PessoaFisicaRepositoryInterface,
@@ -21,9 +27,19 @@ class PessoaFisicaCriarController(PessoaFisicaCriarControllerInterface):
             return self.__format_response(pessoa_criada)
 
         except ValueError as e:
-            return {"success": False, "error": str(e)}
-        except Exception as e:
-            return {"success": False, "error": f"Error inesperado: {str(e)}"}
+            raise HttpBadRequestError(str(e)) from e
+        except IntegrityError as e:
+            error_msg = str(e.orig)
+            if "UNIQUE constraint failed: pessoa_fisica.email" in error_msg:
+                raise HttpUnprocessableEntityError(
+                    "Email já cadastrado no sistema"
+                ) from e
+            if "UNIQUE constraint failed: pessoa_fisica.celular" in error_msg:
+                raise HttpUnprocessableEntityError(
+                    "Celular já cadastrado no sistema"
+                ) from e
+
+            raise HttpUnprocessableEntityError("Dados duplicados no sistema") from e
 
     def __validate_all_exists(self, pessoa_data: Dict):
         campos_obrigatorios = [

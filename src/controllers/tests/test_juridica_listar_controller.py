@@ -1,6 +1,9 @@
 from decimal import Decimal
 
+import pytest
+
 from src.controllers.juridica_listar_controller import PessoaJuridicaListarController
+from src.errors.error_types.http_not_found import HttpNotFoundError
 
 
 class MockPessoaJuridica:
@@ -73,11 +76,10 @@ def test_listar_sucesso():
 def test_nao_encontrado():
     controller = PessoaJuridicaListarController(MockPessoaJuridicaRepository(retornar_vazio=True))  # type: ignore
 
-    response = controller.listar()
+    with pytest.raises(HttpNotFoundError) as exc_info:
+        controller.listar()
 
-    assert response["success"] is False
-    assert "error" in response
-    assert "Nenhuma Pessoa Jurídica Cadastrada" in response["error"]
+    assert "Nenhuma Pessoa Jurídica Cadastrada" in str(exc_info.value)
 
 
 def test_listar_multiplas_pessoas():

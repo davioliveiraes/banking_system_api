@@ -1,8 +1,14 @@
 import re
 from typing import Dict
 
+from sqlalchemy.exc import IntegrityError
+
 from src.controllers.interfaces.juridica_criar_controller import (
     PessoaJuridicaCriarControllerInterface,
+)
+from src.errors.error_types.http_bad_request import HttpBadRequestError
+from src.errors.error_types.http_unprocessable_entity import (
+    HttpUnprocessableEntityError,
 )
 from src.models.sqlite.interfaces.pessoa_juridica_repository import (
     PessoaJuridicaRepositoryInterface,
@@ -19,10 +25,24 @@ class PessoaJuridicaCriarControler(PessoaJuridicaCriarControllerInterface):
             self.__validate_values(pessoa_data)
             pessoa_criada = self.__insert_pessoa_in_db(pessoa_data)
             return self.__format_response(pessoa_criada)
+
         except ValueError as e:
-            return {"success": False, "error": str(e)}
-        except Exception as e:
-            return {"success": False, "error": f"Error inesperado: {str(e)}"}
+            raise HttpBadRequestError(str(e)) from e
+        except IntegrityError as e:
+            error_msg = str(e.orig)
+            if (
+                "UNIQUE constraint failed: pessoa_juridica.email_corporativo"
+                in error_msg
+            ):
+                raise HttpUnprocessableEntityError(
+                    "Email corporativo já cadastrado no sistema"
+                ) from e
+            if "UNIQUE constraint failed: pessoa_juridica.celular" in error_msg:
+                raise HttpUnprocessableEntityError(
+                    "Celular já cadastrado no sistema"
+                ) from e
+
+            raise HttpUnprocessableEntityError("Dados duplicados no sistema") from e
 
     def __validate_all_exists(self, pessoa_data: Dict):
         campos_obrigatorios = [
