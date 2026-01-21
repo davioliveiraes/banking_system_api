@@ -1,3 +1,4 @@
+annotated-types==0.7.0
 astroid==4.0.2
 black==25.12.0
 blinker==1.9.0
@@ -5,11 +6,14 @@ cfgv==3.5.0
 click==8.3.1
 dill==0.4.0
 distlib==0.4.0
+dnspython==2.8.0
+email-validator==2.3.0
 filelock==3.20.0
 Flask==3.1.2
 flask-cors==6.0.2
 greenlet==3.3.0
 identify==2.6.15
+idna==3.11
 iniconfig==2.3.0
 isort==7.0.0
 itsdangerous==2.2.0
@@ -23,6 +27,8 @@ pathspec==0.12.1
 platformdirs==4.5.0
 pluggy==1.6.0
 pre_commit==4.5.0
+pydantic==2.12.5
+pydantic_core==2.41.5
 Pygments==2.19.2
 pylint==4.0.4
 pytest==9.0.2
@@ -30,6 +36,7 @@ pytokens==0.3.0
 PyYAML==6.0.3
 SQLAlchemy==2.0.44
 tomlkit==0.13.3
+typing-inspection==0.4.2
 typing_extensions==4.15.0
 virtualenv==20.35.4
 Werkzeug==3.1.5

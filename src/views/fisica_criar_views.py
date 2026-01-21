@@ -2,6 +2,7 @@ from src.controllers.interfaces.fisica_criar_controller import (
     PessoaFisicaCriarControllerInterface,
 )
 from src.errors.error_types.http_error import HttpError
+from src.validators.fisica_criar_validator import fisica_criar_validator
 
 from .http_types.http_request import HttpRequest
 from .http_types.http_response import HttpResponse
@@ -14,8 +15,8 @@ class PessoaFisicaCriarView(ViewInterface):
 
     def handle(self, http_request: HttpRequest) -> HttpResponse:
         try:
-            pessoa_data = http_request.body
-            body_response = self.__controller.criar(pessoa_data)
+            validated_data = fisica_criar_validator(http_request)
+            body_response = self.__controller.criar(validated_data)
             return HttpResponse(status_code=201, body=body_response)  # type: ignore
 
         except HttpError as error:
