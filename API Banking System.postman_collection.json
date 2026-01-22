@@ -1,0 +1,113 @@
+{
+	"info": {
+		"_postman_id": "7b22e589-473b-4c00-be73-caa3c2bd0a5f",
+		"name": "API Banking System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32841767"
+	},
+	"item": [
+		{
+			"name": "Pessoa Fisica",
+			"item": [
+				{
+					"name": "Criar - Pessoa Fisica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome_completo\": \"Walter White\",\n    \"email\": \"walterwhite@gmail.com\",\n    \"celular\": \"11987654321\",\n    \"idade\": 45,\n    \"renda_mensal\": \"250000\",\n    \"categoria\": \"Quimico\",\n    \"saldo\": \"45000000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/fisica",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"fisica"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar - Pessoa Fisica",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/fisica",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"fisica"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pessoa Jurídica",
+			"item": [
+				{
+					"name": "Criar - Pessoa Juridica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome_fantasia\": \"Petrobras\",\n    \"email_corporativo\": \"petrobras@gmail.com\",\n    \"celular\": \"88990200120\",\n    \"idade\": 10,\n    \"faturamento\": \"10000000.00\",\n    \"categoria\": \"Indústria\",\n    \"saldo\": \"5000000.00\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/juridica",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"juridica"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar - Pessoa Juridica",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome_completo\": \"Dr. Aaron Glassman\",\n    \"email\": \"aaron@gmail.com\",  \n    \"celular\": \"(92) 3 1232-0123\",\n    \"categoria\": \"Saúde\",\n    \"renda_mensal\": \"15000.00\",\n    \"idade\": 45,\n    \"saldo\": \"500000.00\"\n}\n"
+						},
+						"url": {
+							"raw": "{{base_url}}/juridica",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"juridica"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
