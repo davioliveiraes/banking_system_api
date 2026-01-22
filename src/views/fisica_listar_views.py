@@ -1,7 +1,7 @@
 from src.controllers.interfaces.fisica_listar_controller import (
     PessoaFisicaListarControllerInterface,
 )
-from src.errors.error_types.http_error import HttpError
+from src.errors.error_handler import handle_errors
 
 from .http_types.http_request import HttpRequest
 from .http_types.http_response import HttpResponse
@@ -18,14 +18,5 @@ class PessoaFisicaListarViews(ViewInterface):
 
             return HttpResponse(status_code=200, body=body_response)
 
-        except HttpError as error:
-            return HttpResponse(status_code=error.status_code, body=error.to_dict())
-
-        except Exception as exc:
-            return HttpResponse(
-                status_code=500,
-                body={
-                    "success": False,
-                    "error": f"Erro interno do servidor: {str(exc)}",
-                },
-            )
+        except Exception as error:
+            return handle_errors(error)

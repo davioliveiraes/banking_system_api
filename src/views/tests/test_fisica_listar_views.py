@@ -42,7 +42,9 @@ class MockPessoaFisicaListarController(PessoaFisicaListarControllerInterface):
 
 class MockPessoaFisicaListaControllerError(PessoaFisicaListarControllerInterface):
     def listar(self) -> Dict:
-        raise HttpNotFoundError("Nenhuma Pessoa Física Cadastrada")
+        raise HttpNotFoundError(
+            message="Erro nenhuma pessoa física cadastrada", name="Not Found"
+        )
 
 
 def test_handle():
@@ -68,6 +70,7 @@ def test_handle_empty_list():
 
     assert response.status_code == 404
     assert response.body == {
-        "success": False,
-        "error": "Nenhuma Pessoa Física Cadastrada",
+        "errors": [
+            {"title": "Not Found", "detail": "Erro nenhuma pessoa física cadastrada"}
+        ]
     }

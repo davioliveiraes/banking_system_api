@@ -1,7 +1,7 @@
 from src.controllers.interfaces.fisica_criar_controller import (
     PessoaFisicaCriarControllerInterface,
 )
-from src.errors.error_types.http_error import HttpError
+from src.errors.error_handler import handle_errors
 from src.validators.fisica_criar_validator import fisica_criar_validator
 
 from .http_types.http_request import HttpRequest
@@ -19,14 +19,5 @@ class PessoaFisicaCriarView(ViewInterface):
             body_response = self.__controller.criar(validated_data)
             return HttpResponse(status_code=201, body=body_response)  # type: ignore
 
-        except HttpError as error:
-            return HttpResponse(status_code=error.status_code, body=error.to_dict())
-
-        except Exception as exc:
-            return HttpResponse(
-                status_code=500,
-                body={
-                    "success": False,
-                    "error": f"Erro interno do servidor: {str(exc)}",
-                },
-            )
+        except Exception as error:
+            return handle_errors(error)

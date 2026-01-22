@@ -27,7 +27,7 @@ class PessoaJuridicaCriarControler(PessoaJuridicaCriarControllerInterface):
             return self.__format_response(pessoa_criada)
 
         except ValueError as e:
-            raise HttpBadRequestError(str(e)) from e
+            raise HttpBadRequestError(message=str(e), name="Bad Request") from e
         except IntegrityError as e:
             error_msg = str(e.orig)
             if (
@@ -35,14 +35,18 @@ class PessoaJuridicaCriarControler(PessoaJuridicaCriarControllerInterface):
                 in error_msg
             ):
                 raise HttpUnprocessableEntityError(
-                    "Email corporativo já cadastrado no sistema"
+                    message="Email corporativo já cadastrado no sistema",
+                    name="Unprocessable Entity",
                 ) from e
             if "UNIQUE constraint failed: pessoa_juridica.celular" in error_msg:
                 raise HttpUnprocessableEntityError(
-                    "Celular já cadastrado no sistema"
+                    message="Celular já cadastrado no sistema",
+                    name="Unprocessable Entity",
                 ) from e
 
-            raise HttpUnprocessableEntityError("Dados duplicados no sistema") from e
+            raise HttpUnprocessableEntityError(
+                message="Dados duplicados no sistema", name="Unprocessable Entity"
+            ) from e
 
     def __validate_all_exists(self, pessoa_data: Dict):
         campos_obrigatorios = [

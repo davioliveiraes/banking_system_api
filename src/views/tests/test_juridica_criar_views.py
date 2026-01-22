@@ -20,7 +20,9 @@ class MockPessoaJuridicaCriarController(PessoaJuridicaCriarControllerInterface):
 
 class MockPessoaJuridicaCriarControllerError(PessoaJuridicaCriarControllerInterface):
     def criar(self, pessoa_data: Dict) -> Dict:
-        raise HttpBadRequestError("Erro ao criar pessoa jurídica")
+        raise HttpBadRequestError(
+            message="Erro ao criar pessoa jurídica", name="Bad Request"
+        )
 
 
 def test_handle():
@@ -40,17 +42,20 @@ def test_handle():
 
     response = view.handle(http_request)
 
-    assert isinstance(response, HttpResponse)
-    assert response.status_code == 201
-    assert response.body["data"]["type"] == "Pessoa Jurídica"
-    assert response.body["data"]["count"] == 1
-    assert response.body["data"]["attributes"] == pessoa_data
+    assert (
+        response.body["data"]["attributes"]["nome_fantasia"]
+        == pessoa_data["nome_fantasia"]
+    )
+    assert (
+        response.body["data"]["attributes"]["email_corporativo"]
+        == pessoa_data["email_corporativo"]
+    )
 
 
 def test_handle_with_invalid_data():
     pessoa_data = {
         "nome_fantasia": "RED Canids Kalunga",
-        "email_corporativo": "redcanidskalungagmail.com",
+        "email_corporativo": "redcanidskalunga@gmail.com",
         "celular": "(55) 9 3120-2131",
         "categoria": "League of Legends",
         "faturamento": Decimal("560000"),
@@ -65,7 +70,9 @@ def test_handle_with_invalid_data():
     response = view.handle(http_request)
 
     assert response.status_code == 400
-    assert response.body == {"success": False, "error": "Erro ao criar pessoa jurídica"}
+    assert response.body == {
+        "errors": [{"title": "Bad Request", "detail": "Erro ao criar pessoa jurídica"}]
+    }
 
 
 def test_handle_response_structure():

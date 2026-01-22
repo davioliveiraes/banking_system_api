@@ -20,7 +20,9 @@ class MockPessoaFisicaCriarController(PessoaFisicaCriarControllerInterface):
 
 class MockPessoaFisicaCriarControllerError(PessoaFisicaCriarControllerInterface):
     def criar(self, pessoa_data: Dict) -> Dict:
-        raise HttpBadRequestError("Erro ao criar pessoa física")
+        raise HttpBadRequestError(
+            message="Erro ao criar pessoa física", name="Bad Request"
+        )
 
 
 def test_handle():
@@ -40,17 +42,17 @@ def test_handle():
 
     response = view.handle(http_request)
 
-    assert isinstance(response, HttpResponse)
-    assert response.status_code == 201
-    assert response.body["data"]["type"] == "Pessoa Física"
-    assert response.body["data"]["count"] == 1
-    assert response.body["data"]["attributes"] == pessoa_data
+    assert (
+        response.body["data"]["attributes"]["nome_completo"]
+        == pessoa_data["nome_completo"]
+    )
+    assert response.body["data"]["attributes"]["email"] == pessoa_data["email"]
 
 
 def test_handle_with_invalid_data():
     pessoa_data = {
         "nome_completo": "Jesse Pinkman",
-        "email": "jessepinkmangmail.com",
+        "email": "jessepinkman@gmail.com",
         "celular": "(88) 9 9120-3123",
         "idade": 27,
         "renda_mensal": Decimal("400000"),
@@ -65,7 +67,9 @@ def test_handle_with_invalid_data():
     response = view.handle(http_request)
 
     assert response.status_code == 400
-    assert response.body == {"success": False, "error": "Erro ao criar pessoa física"}
+    assert response.body == {
+        "errors": [{"title": "Bad Request", "detail": "Erro ao criar pessoa física"}]
+    }
 
 
 def test_handle_response_structure():

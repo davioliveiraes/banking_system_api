@@ -21,7 +21,9 @@ class PessoaFisicaListarController(PessoaFisicaListarControllerInterface):
     def __find_all_pessoas_in_db(self) -> List[PessoaFisicaTable]:
         pessoas = self.__repository.listar_todas()
         if not pessoas:
-            raise HttpNotFoundError("Nenhuma Pessoa Física Cadastrada")
+            raise HttpNotFoundError(
+                message="Nenhuma Pessoa Física Cadastrada", name="Not Found"
+            )
         return pessoas
 
     def __format_response(self, pessoas: List[PessoaFisicaTable]) -> Dict:

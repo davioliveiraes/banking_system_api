@@ -79,4 +79,4 @@ def juridica_criar_validator(http_request: HttpRequest) -> Dict:
             errors.append(f"{field}: {message}")
 
         error_message = "; ".join(errors)
-        raise HttpBadRequestError(error_message) from e
+        raise HttpBadRequestError(message=error_message, name="Bad Request") from e
